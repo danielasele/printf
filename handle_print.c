@@ -5,8 +5,8 @@
  * @list: List of arguments to be printed.
  * @ind: ind.
  * @buffer: Buffer array to handle print.
- * @flags: Calculates active flags
- * @width: get width.
+ * @flags: Calculates active flags * @width: get width.
+ * @width: Field width specifier.
  * @precision: Precision specification
  * @size: Size specifier
  * Return: 1 or 2;
@@ -19,8 +19,20 @@ int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
 		{'c', print_char}, {'s', print_string}, {'%', print_percent},
 		{'i', print_int}, {'d', print_int}, {'b', print_binary},
 		{'u', print_unsigned}, {'o', print_octal}, {'x', print_hexadecimal},
-		{'X', print_hexa_upper}, {'p', print_pointer}, {'S', print_non_printable},
-		{'r', print_reverse}, {'R', print_rot13string}, {'\0', NULL}
+		{'X', print_hexa_upper},
+#if defined(HAS_PRINT_POINTER)
+		{'p', print_pointer},
+#endif
+#if defined(HAS_PRINT_NON_PRINTABLE)
+		{'S', print_non_printable},
+#endif
+#if defined(HAS_PRINT_REVERSE)
+		{'r', print_reverse},
+#endif
+#if defined(HAS_PRINT_ROT13)
+		{'R', print_rot13string},
+#endif
+		{'\0', NULL}
 	};
 	for (i = 0; fmt_types[i].fmt != '\0'; i++)
 		if (fmt[*ind] == fmt_types[i].fmt)
@@ -47,3 +59,4 @@ int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
 	}
 	return (printed_chars);
 }
+
